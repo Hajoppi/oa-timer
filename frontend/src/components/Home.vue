@@ -14,34 +14,40 @@
 </template>
 
 <script>
+import SocketIO from 'socket.io-client';
+
 export default {
   name: 'Main',
-  props: {
-    msg: String
-  },
   data() {
     return {
       teams: [],
-      newTeam: ''
+      newTeam: '',
+      io: null,
     }
   },
   methods: {
     addTeam() {
-      this.teams.push({
+      const newTeam = {
         name: this.newTeam,
-        time: 0 //Tens of a second
-      });
+        time: 0
+      }
+      this.teams.push(newTeam);
+      this.io.emit('addTeam', newTeam);
       this.newTeam = '';
     },
-    startTimer(team) {
+    startTimer(team, emitted = false) {
       if(!team.active) {
-        team.interval = setInterval(() => team.time += 1, 100);
+        team.interval = setInterval(() => team.time += 1, 10);
+        if (!emitted) this.io.emit('startTimer',team);
         team.active = true
       }
     },
-    stopTimer(team) {
-      clearInterval(team.interval);
-      team.active = false;
+    stopTimer(team, emitted=false) {
+      if(team.active) {
+        clearInterval(team.interval);
+        if (!emitted) this.io.emit('stopTimer',team);
+        team.active = false;
+      }
     },
     formatNumber(n) {
       let minutes = Math.floor(n/600);
@@ -51,6 +57,39 @@ export default {
       if(seconds < 10) seconds = "0"+seconds;
       return `${minutes}:${seconds}:${tens}0`
     },
+  },
+  created() {
+    this.io = SocketIO('http://localhost:3000');
+    this.io.on('updateTeams',(msg) => {
+      this.teams = msg;
+    });
+
+    this.io.on('startTimer',(msg) => {
+      for (let team of this.teams) {
+        if(team.name===msg.name && !team.active) {
+          this.startTimer(team, true);
+          break;
+        }
+      }
+    });
+
+    this.io.on('stopTimer',(msg) => {
+      for (let team of this.teams) {
+        if(team.name===msg.name && team.active) {
+          this.stopTimer(team, true);
+          break;
+        }
+      }
+    });
+
+    this.io.on('addTeam',(msg) => {
+      for (let team of this.teams) {
+        if(team.name===msg.name) {
+          return;
+        }
+      }
+      this.teams.push(msg);
+    });
   }
 }
 </script>
