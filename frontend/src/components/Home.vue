@@ -5,10 +5,10 @@
   </div>
   <div class="teams">
     <div v-for="team in teams" :key="team.name" class="team">
-      <div>{{team.name}}</div>
-      <div>{{formatNumber(team.time)}}</div>
-      <button v-if="!team.active" @click="startTimer(team)">start</button>
-      <button v-else @click="stopTimer(team)">stop</button>
+      <div class="item">{{team.name}}</div>
+      <div class="item">{{formatNumber(team.time)}}</div>
+      <button class="item" v-if="!team.active" @click="startTimer(team)">start</button>
+      <button class="item" v-else @click="stopTimer(team)">stop</button>
     </div>
   </div>
 </template>
@@ -29,8 +29,9 @@ export default {
     addTeam() {
       this.teams.push({
         name: this.newTeam,
-        time: 1500
+        time: 0 //Tens of a second
       });
+      this.newTeam = '';
     },
     startTimer(team) {
       if(!team.active) {
@@ -64,5 +65,8 @@ export default {
 .teams {
   width: 100%;
   max-width: 768px;
+}
+.item {
+  flex: 1;
 }
 </style>
