@@ -1,3 +1,5 @@
+const { runInNewContext } = require("vm");
+
 let app = require("express")();
 let http = require("http").Server(app);
 let io = require("socket.io")(http);
@@ -15,6 +17,12 @@ io.on('connection', (socket) => {
     });
     socket.on('stopTimer',(msg) => {
         socket.broadcast.emit('stopTimer', msg);
+        for (let team of teams) {
+            if(team.name===msg.name) {
+              team.time = msg.time;
+              break;
+            }
+        }
     });
 });
 

@@ -37,9 +37,9 @@ export default {
     },
     startTimer(team, emitted = false) {
       if(!team.active) {
-        team.interval = setInterval(() => team.time += 1, 10);
-        if (!emitted) this.io.emit('startTimer',team);
         team.active = true
+        team.interval = setInterval(() => team.time += 1, 100);
+        if (!emitted) this.io.emit('startTimer',team);
       }
     },
     stopTimer(team, emitted=false) {
@@ -108,4 +108,5 @@ export default {
 .item {
   flex: 1;
 }
+
 </style>
