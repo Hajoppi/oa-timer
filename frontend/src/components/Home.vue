@@ -100,7 +100,8 @@ export default {
     }
   },
   created() {
-    this.io = SocketIO('http://localhost:3000');
+    this.io = SocketIO(process.env.VUE_APP_API_LOCATION);
+    console.log(process.env.VUE_APP_API_LOCATION);
     this.io.on('updateTeams',(msg) => {
       this.teams = msg;
     });

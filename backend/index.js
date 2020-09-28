@@ -1,13 +1,15 @@
-const { runInNewContext } = require("vm");
-
 let app = require("express")();
 let http = require("http").Server(app);
 let io = require("socket.io")(http);
 
 const teams = [];
+app.get('/', (req, res) => {
+    res.send('hello world')
+});
 
 io.on('connection', (socket) => {
     socket.on('addTeam',(msg) => {
+        console.log("Team added", msg);
         teams.push(msg);
         socket.broadcast.emit('addTeam', msg);
     });
