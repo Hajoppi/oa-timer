@@ -1,11 +1,11 @@
 let app = require("express")();
 let http = require("http").Server(app);
 let io = require("socket.io")(http);
+var serveStatic = require('serve-static');
+
+app.use(serveStatic(__dirname + "/dist"));
 
 const teams = [];
-app.get('/', (req, res) => {
-    res.send('hello world')
-});
 
 io.on('connection', (socket) => {
     socket.on('addTeam',(msg) => {
@@ -46,6 +46,6 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(3000, () => {
+http.listen(80, () => {
     console.log("listening");
 });
