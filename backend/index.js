@@ -24,6 +24,24 @@ io.on('connection', (socket) => {
             }
         }
     });
+    socket.on('finish',(msg) => {
+        socket.broadcast.emit('finish', msg);
+        for (let team of teams) {
+            if(team.name===msg.name) {
+              team.finished = msg.finished;
+              break;
+            }
+        }
+    });
+    socket.on('delete',(msg) => {
+        socket.broadcast.emit('delete', msg);
+        for (let i = 0; i < teams.length; i += 1) {
+            const team = teams[i];
+            if(team.name===msg.name) {
+                teams.splice(i,1)
+            }
+        }
+    });
 });
 
 http.listen(3000, () => {
