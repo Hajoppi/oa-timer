@@ -10,10 +10,10 @@
         <div class="item item__name">{{team.name}}</div>
         <div class="item">{{formatNumber(team.time)}}</div>
         <div v-if="admin">
-          <button @click="deleteTeam(team)">delete</button>
           <button v-if="!team.active" @click="startTimer(team)">start</button>
           <button v-else @click="stopTimer(team)">stop</button>
           <button v-if="!team.active" @click="finish(team)">finnish</button>
+          <button @click="deleteTeam(team)">delete</button>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ export default {
     addTeam() {
       const newTeam = {
         name: this.newTeam,
-        time: 0,
+        time: 5900,
         finished: false
       }
       this.teams.push(newTeam);
@@ -64,7 +64,7 @@ export default {
     startTimer(team, emitted = false) {
       if(!team.active) {
         team.active = true
-        team.interval = setInterval(() => team.time += 1, 100);
+        team.interval = setInterval(() => team.time += 1, 10);
         if (!emitted) this.io.emit('startTimer',team);
       }
     },
@@ -80,12 +80,13 @@ export default {
       if (!emitted) this.io.emit('finish',team);
     },
     formatNumber(n) {
-      let minutes = Math.floor(n/600);
-      let seconds = Math.floor(n/10 - minutes*60);
-      let tens = n - minutes*600 - seconds*10
+      let minutes = Math.floor(n/6000);
+      let seconds = Math.floor(n/100 - minutes*60);
+      let hundreds = n - minutes*6000 - seconds*100
       if(minutes < 10) minutes = "0"+minutes;
       if(seconds < 10) seconds = "0"+seconds;
-      return `${minutes}:${seconds}:${tens}0`
+      if(hundreds < 10) hundreds = "0"+hundreds;
+      return `${minutes}:${seconds}:${hundreds}`
     },
   },
   mounted() {
@@ -195,6 +196,10 @@ export default {
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+html {
+  background-color: lightslategray;
 }
 
 </style>

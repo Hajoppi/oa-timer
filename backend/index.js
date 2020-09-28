@@ -9,7 +9,6 @@ const teams = [];
 
 io.on('connection', (socket) => {
     socket.on('addTeam',(msg) => {
-        console.log("Team added", msg);
         teams.push(msg);
         socket.broadcast.emit('addTeam', msg);
     });
