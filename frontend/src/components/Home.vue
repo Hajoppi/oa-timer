@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    this.admin = window.location.pathname === '/admin'
+    this.admin = window.location.search === '?admin=true'
   },
   computed: {
     finished () {
@@ -101,7 +101,6 @@ export default {
   },
   created() {
     this.io = SocketIO(process.env.VUE_APP_API_LOCATION);
-    console.log(process.env.VUE_APP_API_LOCATION);
     this.io.on('updateTeams',(msg) => {
       this.teams = msg;
     });
@@ -196,9 +195,6 @@ export default {
   display: flex;
   justify-content: space-between;
   width: 100%;
-}
-html{
-  background-color: red;
 }
 
 </style>
