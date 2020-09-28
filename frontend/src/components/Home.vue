@@ -45,7 +45,7 @@ export default {
     addTeam() {
       const newTeam = {
         name: this.newTeam,
-        time: 5900,
+        time: 0,
         finished: false
       }
       this.teams.push(newTeam);
