@@ -6,7 +6,7 @@
   <div class="container">
     <div class="teams">
       <div v-for="team in racing" :key="team.name" class="team">
-        <img class="team__image" src="../assets/row.png" alt="">
+        <img class="team__image" :src="team.image" alt="">
         <div class="item item__name">{{team.name}}</div>
         <div class="item">{{formatNumber(team.time)}}</div>
         <div v-if="admin">
@@ -20,7 +20,7 @@
     <div class="filler"></div>
     <div class="finished">
       <div class="team" v-for="team in finished" :key="team.name">
-        <img class="team__image" src="../assets/row.png" alt="">
+        <img class="team__image" :src="team.image" alt="">
         <div class="item item__name">{{team.name}}</div>
         <div class="item">{{formatNumber(team.time)}}</div>
         <button v-if="admin" @click="deleteTeam(team)">delete</button>
@@ -31,6 +31,13 @@
 
 <script>
 import SocketIO from 'socket.io-client';
+import red from '../assets/red.png';
+import green from '../assets/green.png';
+import violet from '../assets/violet.png';
+import pink from '../assets/pink.png';
+import orange from '../assets/orange.png';
+import blue from '../assets/blue.png';
+
 export default {
   name: 'Main',
   data() {
@@ -43,10 +50,13 @@ export default {
   },
   methods: {
     addTeam() {
+      const colors = [red, green, blue,pink, violet, orange]
+      const image = colors[Math.floor(Math.random() * colors.length)];
       const newTeam = {
         name: this.newTeam,
         time: 0,
-        finished: false
+        finished: false,
+        image,
       }
       this.teams.push(newTeam);
       this.io.emit('addTeam', newTeam);
